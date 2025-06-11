@@ -50,6 +50,39 @@ np.save("test_label.npy", y_test)
 ####
 
 # TODO: Print dataset split summary...
+def get_statistics_text(targets):
+    classes , counts = np.unique(targets, return_counts=True)
+    return classes, counts
+get_statistics_text(digits.target)
+
+
+# Création des DataFrames
+pixel_columns = [f'pixel_{i}' for i in range(X.shape[1])]
+X_train_df = pd.DataFrame(X_train, columns=pixel_columns)
+X_test_df = pd.DataFrame(X_test, columns=pixel_columns)
+y_train_df = pd.DataFrame(y_train, columns=['label'])
+y_test_df = pd.DataFrame(y_test, columns=['label'])
+
+# Ajouter les étiquettes aux features sur les targets et les data
+X_train_df['y_train'] = y_train
+X_test_df['y_test'] = y_test
+
+# Summary du train et du test
+print("Résumé de X_train :")
+print(X_train_df.describe())
+print(f"Feature matrix X_train_df shape: {X_train_df.shape}. Max value = {np.max(X_train_df)}, Min value = {np.min(X_train_df)}, Mean value = {np.mean(X_train_df)}")
+
+print("\nRésumé de X_test :")
+print(X_test_df.describe())
+print(f"Feature matrix X_test_df shape: {X_test_df.shape}. Max value = {np.max(X_test_df)}, Min value = {np.min(X_test_df)}, Mean value = {np.mean(X_test_df)}")
+
+print("\nRépartition des classes dans y_train :")
+print(y_train_df['label'].value_counts())
+print(f"Feature matrix y_train_df shape: {y_train_df.shape}. Max value = {np.max(y_train_df)}, Min value = {np.min(y_train_df)}, Mean value = {np.mean(y_train_df)}")
+
+print("\nRépartition des classes dans y_test :")
+print(y_test_df['label'].value_counts())
+print(f"Feature matrix X_train_df shape: {y_test_df.shape}. Max value = {np.max(y_test_df)}, Min value = {np.min(y_test_df)}, Mean value = {np.mean(y_test_df)}")
 
 
 # TODO: ... and plot graphs of the three distributions in a readable and useful manner (bar graph, either side by side, or with some transparancy)
@@ -72,6 +105,27 @@ plt.title("Distribution des classes")
 plt.xticks(x, classes)  # Affiche les vraies classes sur l'axe x
 plt.legend(title='Dataset')
 plt.show()
+
+# Distance de Bhattacharyya, vient affirmer le graphe précédent
+random.seed(10)
+
+def bhattacharyya_distance(p, q, epsilon=1e-10):
+    p /= p.sum()
+    q /= q.sum()
+    bc = np.sum(np.sqrt(p * q))
+    # Distance
+    return -np.log(bc)
+
+# Comptes de classes
+train_counts = np.bincount(y_train)
+test_counts = np.bincount(y_test)
+
+# Distributions (probabilités)
+train_dist = train_counts / train_counts.sum()
+test_dist = test_counts / test_counts.sum()
+
+distance = bhattacharyya_distance(train_dist, test_dist)
+print(f"Distance de Bhattacharyya entre les distributions de y_train et y_test : {distance:.5f}")
 
 
 # TODO: (once the learning has started, and to be documented in your report) - Impact: Changing test_size affects model training & evaluation.
