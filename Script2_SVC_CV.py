@@ -241,16 +241,44 @@ print("Try different values like 0.1, 0.3, etc., and compare results.\n")
 ##########################################
 ## Hyper parameter tuning and CV
 ##########################################
-# TODO: Change from the linear classifier to an rbf kernel
+clf2 = Pipeline([("scaler1", StandardScaler()),("features", all_features),("scaler2", StandardScaler()), ("classifier", SVC(kernel='rbf'))])
+
 # TODO: List all interesting parameters you may want to adapt from your preprocessing and algorithm pipeline
+
 # TODO: Create a dictionary with all the parameters to be adapted and the ranges to be tested
 
+ 
+param_grid = {"classifier__C": [0.1, 1, 10],"classifier__gamma": [ 0.01, 0.001],'classifier__kernel': ['rbf']}
+
 # TODO: Use a GridSearchCV on 5 folds to optimize the hyper parameters
-grid_search = GridSearchCV(DummyClassifier()) #, verbose=10)
+
+grid_search = GridSearchCV(clf2, param_grid,  scoring=None,cv=None)
+
+
+# Apprentissage sur les données d'entraînement
+grid_search.fit(X_train, y_train)    #entraîner le modèle GridSearchCV sur données d’entraînement
+kfold = KFold(n_splits=5, shuffle=False, random_state=None)
+
+# Effectuer la validation croisée
+cross_val_scores = cross_val_score(grid_search.best_estimator_, X_train, y_train, cv=kfold)
+
+
+
+
 # TODO: fit the grid search CV and 
 # 1. Check the results
 # 2. Update the original pipeline (or create a new one) with all the optimized hyper parameters
 # 3. Retrain on the whol train set, and evaluate on the test set
+
+clf2.fit(X_train,y_train)
+ 
+predict_test3 = clf2.predict(X_test)
+predict_train3 = clf2.predict(X_train)
+
+print("Accuracy of the SVC on the test set: ", sum(y_test==predict_test3)/len(y_test))
+print("Accuracy of the SVC on the train set: ", sum(y_train==predict_train)/len(y_train))
+
+
 # 4. Answer the questions below and report on your findings
 
 print(" K-Fold Cross-Validation Results:")
@@ -259,6 +287,12 @@ print(f"- Best parameters found: {grid_search.best_estimator_}")
 #####
 print("\n Question: What happens if we change K from 5 to 10?")
 print("Test different K values and compare the accuracy variation.\n")
+
+
+
+
+
+
 
 
 ##########################################
