@@ -301,28 +301,49 @@ print("Test different K values and compare the accuracy variation.\n")
 # TODO: Using the best found classifier, analyse the impact of one vs one versus one vs all strategies
 # Analyse in terms of time performance and accuracy
 
-
 # Print OvO results
+
+ovo_clf=OneVsOneClassifier(clf4)
+
+start_ovo = time.time()  # heure de début
+ovo_clf.fit(X_train, y_train)  # Entraînement du classifieur OvO
+ovo_time = time.time() - start_ovo  # Temps total écoulé
+
+
+
+ovo_clf.predict(X_test)
+
 print(" One-vs-One (OvO) Classification:")
-print(f"- Test score: {clf.score(X_test, y_test)}")
-print(f"- Number of classifiers trained: {len(clf.get_params('classifier__estimators_'))}")
+print(f"- Test score: {ovo_clf.score(X_test, y_test)}")
+print(f"- Number of classifiers trained: {len(ovo_clf.get_params('classifier__estimators_'))}")
 print("- Impact: Suitable for small datasets but increases complexity.")
 
 print("\n Question: How does OvO compare to OvR in execution time?")
 print("Try timing both methods and analyzing efficiency.\n")
+
+
+
 ###################
 # TODO:  One-vs-Rest (OvR) Classification
+ovr_clf = OneVsRestClassifier(clf4)
+
+
+start_ovr = time.time()  # heure de début
+ovr_clf.fit(X_train, y_train)  # Entraînement du classifieur OvO
+ovr_time = time.time() - start_ovr  # Temps total écoulé
+
+
+
+
+ovr_pred = ovr_clf.predict(X_test)
 
 
 # Print OvR results
 print(" One-vs-Rest (OvR) Classification:")
-print(f"- Test score: {clf.score(X_test, y_test)}")
-print(f"- Number of classifiers trained: {len(clf.get_params('classifier__estimators_'))}")
+print(f"- Test score: {ovr_clf.score(X_test, y_test)}")
+print(f"- Number of classifiers trained: {len(ovr_clf.get_params('classifier__estimators_'))}")
 print("- Impact: Better for large datasets but less optimal for highly imbalanced data.")
 
 print("\n Question: When would OvR be better than OvO?")
 print("Analyze different datasets and choose the best approach!\n")
 ########
-
-
-
