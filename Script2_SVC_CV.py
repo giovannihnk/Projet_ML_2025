@@ -50,11 +50,11 @@ np.save("test_label.npy", y_test)
 ####
 
 # TODO: Print dataset split summary...
+# Ré-importation de la fonction get_statistics_text et affichage du summary()<--> "comme en R" de la database  (Gio)
 def get_statistics_text(targets):
     classes , counts = np.unique(targets, return_counts=True)
     return classes, counts
 get_statistics_text(digits.target)
-
 
 # Création des DataFrames
 pixel_columns = [f'pixel_{i}' for i in range(X.shape[1])]
@@ -83,6 +83,8 @@ print(f"Feature matrix y_train_df shape: {y_train_df.shape}. Max value = {np.max
 print("\nRépartition des classes dans y_test :")
 print(y_test_df['label'].value_counts())
 print(f"Feature matrix X_train_df shape: {y_test_df.shape}. Max value = {np.max(y_test_df)}, Min value = {np.min(y_test_df)}, Mean value = {np.mean(y_test_df)}")
+############################################################################################################ 
+
 
 
 # TODO: ... and plot graphs of the three distributions in a readable and useful manner (bar graph, either side by side, or with some transparancy)
@@ -106,7 +108,9 @@ plt.xticks(x, classes)  # Affiche les vraies classes sur l'axe x
 plt.legend(title='Dataset')
 plt.show()
 
-# Distance de Bhattacharyya, vient affirmer le graphe précédent
+
+############################################################################################################ 
+# Distance de Bhattacharyya, vient affirmer le graphe précédent (Gio)
 def bhattacharyya_distance(p, q, epsilon=1e-10):
     p /= p.sum()
     q /= q.sum()
@@ -124,7 +128,7 @@ test_dist = test_counts / test_counts.sum()
 
 distance = bhattacharyya_distance(train_dist, test_dist)
 print(f"Distance de Bhattacharyya entre les distributions de y_train et y_test : {distance:.5f}")
-
+############################################################################################################ 
 
 # TODO: (once the learning has started, and to be documented in your report) - Impact: Changing test_size affects model training & evaluation.
 
