@@ -1,0 +1,46 @@
+#Graphes gio
+
+
+# Charger et réduire les données à 2D
+digits = load_digits()
+X, y = digits.data, digits.target
+X_pca = PCA(n_components=2).fit_transform(X)
+
+# Division
+X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=0.3, random_state=42)
+
+clf5 = svm.SVC(kernel='rbf', gamma=0.01, C=10)
+ovo = OneVsOneClassifier(clf5).fit(X_train, y_train)
+ovr = OneVsRestClassifier(clf5).fit(X_train, y_train)
+
+
+# Fonction pour tracer la frontière de décision
+def plot_training_data_with_decision_boundary(model, X, y):
+    plt.figure(figsize=(6, 5))
+    ax = plt.gca()
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+
+    # Afficher les frontières
+    DecisionBoundaryDisplay.from_estimator(
+        model,
+        X,
+        response_method="predict",
+        plot_method="pcolormesh",
+        alpha=0.3,
+        ax=ax,
+    )
+
+    # Tracer les points
+    scatter = ax.scatter(X[:, 0], X[:, 1], c=y, s=30, edgecolors="k", cmap='tab10')
+    ax.legend(*scatter.legend_elements(), title="Classes")
+ 
+    plt.tight_layout()
+    plt.show()
+
+
+# Tracer les deux frontières
+plot_training_data_with_decision_boundary(ovo, X_train, y_train)
+plot_training_data_with_decision_boundary(ovr, X_train, y_train)
