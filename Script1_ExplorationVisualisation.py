@@ -148,6 +148,7 @@ plt.show()
 
 #### TODO: Expolore the explanined variance of PCA and plot 
 
+# Re-création de l'algorithme de PCA (Gio)
 # Create the visualization plot
 X_centered = F - np.mean(F, axis=0)
 cov_matrix = np.transpose(X_centered) @ X_centered # : matrice de corrélation
