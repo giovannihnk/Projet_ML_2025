@@ -107,8 +107,6 @@ plt.legend(title='Dataset')
 plt.show()
 
 # Distance de Bhattacharyya, vient affirmer le graphe précédent
-random.seed(10)
-
 def bhattacharyya_distance(p, q, epsilon=1e-10):
     p /= p.sum()
     q /= q.sum()
